@@ -17,6 +17,8 @@ bool debug_server = false;
 bool control_mode = 0;
 char incomingData[64];  // Array to hold incoming data
 float temp_range = 0;
+float humi_range = 0;
+float lux_range = 0;
 uint8_t mosfetSpeed = 100;
 
 int relayState1 = 0;
@@ -116,7 +118,7 @@ void handleRoot() {
 }
 
 void sendToArduino() {
-  String message = "g," + String(temp_range) + "," + String(control_mode) + "," + String(mosfetSpeed);
+  String message = "g," + String(temp_range) + "," + String(humi_range) + "," + String(lux_range) + String(control_mode) + "," + String(mosfetSpeed);
   // Add relay states to the message
   message += "," + String(relayState1) + "," + String(relayState2) + "," + String(relayState3) + "," + String(relayState4);
 
@@ -136,6 +138,16 @@ BLYNK_WRITE(V4) {                  // Virtual Pin V4 is assigned to button widge
 
 BLYNK_WRITE(V3) {                // Virtual Pin V3 is assigned to input number widget
   temp_range = param.asFloat();  // Set the temperature range from the app
+  sendToArduino();
+}
+
+BLYNK_WRITE(V10) {                // Virtual Pin V3 is assigned to input number widget
+  humi_range = param.asFloat();  // Set the temperature range from the app
+  sendToArduino();
+}
+
+BLYNK_WRITE(V11) {                // Virtual Pin V3 is assigned to input number widget
+  light_range = param.asFloat();  // Set the temperature range from the app
   sendToArduino();
 }
 
