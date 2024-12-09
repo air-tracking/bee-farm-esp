@@ -1,12 +1,12 @@
-#define blynkTemplateId "TMPL6Br9XbE2_"
-#define blynkTemplateName "sau"
+#define BLYNK_TEMPLATE_ID "TMPL6Ayz05G80"
+#define BLYNK_TEMPLATE_NAME "Bee"
 
 #include <ESP8266WiFi.h>
 #include <WiFiManager.h>  // https://github.com/tzapu/WiFiManager
 #include <BlynkSimpleEsp8266.h>
 #include <ESP8266WebServer.h>  // For Web Server
 
-const char blynkAuth[] = "khn2mK6HNos9yQKCkyDT1pBPesFCYJd1";  // Blynk Auth Token
+const char blynkAuth[] = "k2Pho8WdFixchzqbyYFOJ6meN2OlN7iK";  // Blynk Auth Token
 
 WiFiManager wifiManager;
 ESP8266WebServer webServer(80);  // Web server on port 80
@@ -21,10 +21,10 @@ float humiRange = 0;
 float luxRange = 0;
 uint8_t mosfetSpeed = 100;
 
+int lightControl = 0;
+int humiControl = 0;
 int relayState1 = 0;
-int relayState2 = 0;
-int relayState3 = 0;
-int relayState4 = 0;
+int relayState = 0;
 int relayState5 = 0;
 
 void readSerial();
@@ -112,8 +112,8 @@ void handleRoot() {
 }
 
 void sendToArduino() {
-  String message = "g," + String(tempRange) + "," + String(humiRange) + "," + String(luxRange) + String(controlMode) + "," + String(mosfetSpeed);
-  message += "," + String(relayState1) + "," + String(relayState2) + "," + String(relayState3) + "," + String(relayState4);
+  String message = "g," + String(tempRange) + "," + String(humiRange) + "," + String(luxRange) + "," + String(controlMode) + "," + String(mosfetSpeed);
+  message += "," + String(lightControl) + "," + String(humiControl) + "," + String(relayState1) + "," + String(relayState);
 
   Serial.println(message);  // Send the formatted message to Arduino over serial
 }
@@ -136,7 +136,7 @@ BLYNK_WRITE(V3) {
 BLYNK_WRITE(V10) {
   humiRange = param.asFloat();
   sendToArduino();
-}
+} 
 
 BLYNK_WRITE(V11) {
   luxRange = param.asFloat();
@@ -144,21 +144,21 @@ BLYNK_WRITE(V11) {
 }
 
 BLYNK_WRITE(V6) {
-  relayState1 = param.asInt();
+  lightControl = param.asInt();
   sendToArduino();
 }
 
 BLYNK_WRITE(V7) {
-  relayState2 = param.asInt();
+  humiControl = param.asInt();
   sendToArduino();
 }
 
 BLYNK_WRITE(V8) {
-  relayState3 = param.asInt();
+  relayState1 = param.asInt();
   sendToArduino();
 }
 
 BLYNK_WRITE(V9) {
-  relayState4 = param.asInt();
+  relayState = param.asInt();
   sendToArduino();
 }
